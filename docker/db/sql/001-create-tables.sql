@@ -1,5 +1,5 @@
 ---- drop ----
-DROP TABLE IF EXISTS `test_tqable`;
+DROP TABLE IF EXISTS `test_table`;
 
 ---- create ----
 create table IF not exists `test_table`
