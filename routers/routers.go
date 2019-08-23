@@ -21,6 +21,17 @@ func InitRouter() *gin.Engine {
 		{
 			users.GET("/", v1.GetUsers)
 		}
+		friendships := api.Group("/friendships")
+		{
+			create := friendships.Group("/create")
+			{
+				create.POST("/", v1.Create)
+			}
+			destroy := friendships.Group("/destroy")
+			{
+				destroy.POST("/", v1.Destroy)
+			}
+		}
 	}
 
 	return router
