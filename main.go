@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"./routers"
 )
@@ -12,8 +13,8 @@ func main() {
 	server := &http.Server{
 		Addr:           fmt.Sprintf(":%d", 8080),
 		Handler:        router,
-		ReadTimeout:    60000,
-		WriteTimeout:   60000,
+		ReadTimeout:    60 * time.Second,
+		WriteTimeout:   60 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
 

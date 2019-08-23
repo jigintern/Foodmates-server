@@ -69,8 +69,11 @@ func ReadPosts(ctx *gin.Context) {
 // CreatePost   POST "/api/v1/posts"
 func CreatePost(ctx *gin.Context) {
 	var data PostData
-	ctx.BindJSON(&data)
-	fmt.Println(data)
+	err := ctx.BindJSON(&data)
+	if err != nil {
+		fmt.Println("======== request couldn't bind to json!! ========")
+		return
+	}
 	dummyData = append(dummyData, gin.H{
 		"dish_name":             "ラーメン" + strconv.Itoa(data.DishID),
 		"restaurant_name":       "美味しい店" + strconv.Itoa(data.DishID),
@@ -83,4 +86,6 @@ func CreatePost(ctx *gin.Context) {
 		"created_at":            time.Now(),
 	})
 	ctx.JSON(200, gin.H{"data": data})
+	fmt.Println("======== success!! ========")
+	fmt.Println(data)
 }
