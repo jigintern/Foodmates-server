@@ -14,7 +14,8 @@ func InitRouter() *gin.Engine {
 	{
 		posts := api.Group("/posts")
 		{
-			posts.GET("/", v1.GetPosts)
+			posts.GET("/", v1.ReadPosts)
+			posts.POST("/", v1.CreatePost)
 		}
 		users := api.Group("/users")
 		{
