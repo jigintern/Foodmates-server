@@ -1,10 +1,18 @@
 package v1
 
 import (
+	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
+
+type PostData struct {
+	UserID  int    `json:"user_id"`
+	Content string `json:"comment"`
+	DishID  int    `json:"dish_id"`
+}
 
 var dummyData = []gin.H{
 	{
@@ -53,7 +61,31 @@ var dummyData = []gin.H{
 	},
 }
 
-// GetPosts   GET "/api/v1/posts"
-func GetPosts(ctx *gin.Context) {
+// ReadPosts   GET "/api/v1/posts"
+func ReadPosts(ctx *gin.Context) {
 	ctx.JSON(200, dummyData)
+}
+
+// CreatePost   POST "/api/v1/posts"
+func CreatePost(ctx *gin.Context) {
+	var data PostData
+	err := ctx.BindJSON(&data)
+	if err != nil {
+		fmt.Println("======== request couldn't bind to json!! ========")
+		return
+	}
+	dummyData = append(dummyData, gin.H{
+		"dish_name":             "ラーメン" + strconv.Itoa(data.DishID),
+		"restaurant_name":       "美味しい店" + strconv.Itoa(data.DishID),
+		"restaurant_place":      "東京都 " + strconv.Itoa(data.DishID) + "番区",
+		"user_name":             "ユーザー" + strconv.Itoa(data.DishID),
+		"user_icon_address":     "public/img/users/icon/" + strconv.Itoa(data.UserID) + ".jpg",
+		"is_bookmark":           false,
+		"content":               data.Content,
+		"content_image_address": "public/img/posts/" + strconv.Itoa(data.DishID) + ".jpg",
+		"created_at":            time.Now(),
+	})
+	ctx.JSON(200, gin.H{"data": data})
+	fmt.Println("======== success!! ========")
+	fmt.Println(data)
 }
