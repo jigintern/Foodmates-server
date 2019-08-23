@@ -6,10 +6,10 @@ services:
     depends_on:
       - db
     ports:
-      - "5000:5000"
+      - "8080:8080"
     command: bash -c 'go mod download && go run main.go'
     environment:
-      PORT: "5000"
+      PORT: "8080"
     tty: true
     volumes:
       - ".:/go/src/github.com/jigintern/Foodmates-server"
@@ -28,15 +28,3 @@ services:
     env_file:
       - .env
     tty: true
-
-  adminer:
-    image: adminer
-    depends_on:
-      - db
-    restart: always
-    ports:
-      - "8080:8080"
-    environment:
-      ADMINER_DEFAULT_DB_DRIVER: mysql
-      ADMINER_DEFAULT_DB_HOST: mysql_host
-
