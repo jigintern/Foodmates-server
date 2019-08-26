@@ -1,12 +1,12 @@
-package v1
+package controllers
 
 import (
 	"fmt"
 	"strconv"
 	"time"
-	"os"
-
+	"../models"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
 
 type PostData struct {
@@ -15,7 +15,7 @@ type PostData struct {
 	DishID  int    `json:"dish_id"`
 }
 
-/*
+
 var dummyData = []gin.H{
 	{
 		"dish_name":             "塩ラーメン",
@@ -62,17 +62,16 @@ var dummyData = []gin.H{
 		"created_at":            time.Date(2019, 8, 21, 7, 13, 01, 0, time.UTC),
 	},
 }
-*/
+
 
 // ReadPosts   GET "/api/v1/posts"
 func ReadPosts(ctx *gin.Context) {
-	//ctx.JSON(200, dummyData)
-	
-	var post []Post
+	var post []models.Post
+	var db gorm.DB = *(models.GetDB())
+	fmt.Printf("db_addr____controller: %v\n", db)
 	db.Table("Posts").Find(&post)
-	data := json.Marshal(&post)
 	fmt.Println(post)
-	ctx.JSON(200, data)
+	ctx.JSON(200, post)
 }
 
 // CreatePost   POST "/api/v1/posts"

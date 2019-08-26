@@ -4,12 +4,23 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+	"log"
 
 	"./models"
 	"./routers"
+	"github.com/joho/godotenv"
 )
 
+func EnvLoad() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
+
 func main() {
+	EnvLoad()
+	models.InitDB()
 	router := routers.InitRouter()
 	server := &http.Server{
 		Addr:           fmt.Sprintf(":%d", 8080),
