@@ -3,6 +3,7 @@ package v1
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 	"log"
@@ -28,10 +29,10 @@ func EnvLoad() {
 
 
 func gormConnect() *gorm.DB {
-	USER := "root"
-	PASS := os.Getenv("MYSQL_ROOT_PASSWORD")
-	PROTOCOL := "t2.intern.jigd.info:3306)"
-	DBNAME := os.Getenv("MYSQL_DATABASE")
+	USER := os.Getenv("MYSQL_USER")
+	PASS := os.Getenv("MYSQL_PASSWORD")
+	PROTOCOL := "tcp(t2.intern.jigd.info:3306)"
+	DBNAME := os.Getenv("USERS_DATABASE")
 
 	CONNECT := USER+":"+PASS+"@"+PROTOCOL+"/"+DBNAME+"?charset=utf8&parseTime=True&loc=Local"
 	db,err := gorm.Open("mysql", CONNECT)
@@ -46,7 +47,7 @@ func gormConnect() *gorm.DB {
 func CreateFriendships(ctx *gin.Context){
 	EnvLoad()
 	var jsonData FollowsData
-	err := ctx.BindJSON(jsonData)
+	err := ctx.BindJSON(&jsonData)
 	if err != nil{
 		log.Fatalln(err.Error())
 	}
@@ -61,7 +62,7 @@ func CreateFriendships(ctx *gin.Context){
 func DestroyFriendships(ctx *gin.Context){
 	EnvLoad()
 	var jsonData FollowsData
-	err := ctx.BindJSON(jsonData)
+	err := ctx.BindJSON(&jsonData)
 	if err != nil{
 		log.Fatalln(err.Error())
 	}
