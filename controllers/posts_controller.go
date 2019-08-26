@@ -15,8 +15,7 @@ type PostData struct {
 	DishID  int    `json:"dish_id"`
 }
 
-
-var dummyData = []gin.H{
+var dummyPostData = []gin.H{
 	{
 		"dish_name":             "塩ラーメン",
 		"restaurant_name":       "らあめん極",
@@ -82,7 +81,7 @@ func CreatePost(ctx *gin.Context) {
 		fmt.Println("======== request couldn't bind to json!! ========")
 		return
 	}
-	dummyData = append(dummyData, gin.H{
+	dummyPostData = append(dummyPostData, gin.H{
 		"dish_name":             "ラーメン" + strconv.Itoa(data.DishID),
 		"restaurant_name":       "美味しい店" + strconv.Itoa(data.DishID),
 		"restaurant_place":      "東京都 " + strconv.Itoa(data.DishID) + "番区",
