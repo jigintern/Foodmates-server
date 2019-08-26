@@ -28,5 +28,9 @@ func GormConnect() *gorm.DB {
 	if err != nil {
 		panic(err.Error())
 	}
+	
+	EnvLoad()
+	db := GormConnect()
+	db.LogMode(true)
 	return db
 }

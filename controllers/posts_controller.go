@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,6 +15,7 @@ type PostData struct {
 	DishID  int    `json:"dish_id"`
 }
 
+/*
 var dummyData = []gin.H{
 	{
 		"dish_name":             "塩ラーメン",
@@ -60,10 +62,17 @@ var dummyData = []gin.H{
 		"created_at":            time.Date(2019, 8, 21, 7, 13, 01, 0, time.UTC),
 	},
 }
+*/
 
 // ReadPosts   GET "/api/v1/posts"
 func ReadPosts(ctx *gin.Context) {
-	ctx.JSON(200, dummyData)
+	//ctx.JSON(200, dummyData)
+	
+	var post []Post
+	db.Table("Posts").Find(&post)
+	data := json.Marshal(&post)
+	fmt.Println(post)
+	ctx.JSON(200, data)
 }
 
 // CreatePost   POST "/api/v1/posts"

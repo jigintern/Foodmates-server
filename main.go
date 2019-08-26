@@ -11,7 +11,6 @@ import (
 
 func main() {
 	router := routers.InitRouter()
-	models.InitPostsModel()
 	server := &http.Server{
 		Addr:           fmt.Sprintf(":%d", 8080),
 		Handler:        router,
