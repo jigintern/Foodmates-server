@@ -17,8 +17,8 @@ func EnvLoad() {
 }
 
 func GormConnect() *gorm.DB {
-	USER := "root"
-	PASS := os.Getenv("MYSQL_ROOT_PASSWORD")
+	USER := os.Getenv("MYSQL_USER")
+	PASS := os.Getenv("MYSQL_PASSWORD")
 	PROTOCOL := "tcp(mysql_host:3306)"
 	DBNAME := os.Getenv("MYSQL_DATABASE")
 
