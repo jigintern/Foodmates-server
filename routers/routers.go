@@ -20,7 +20,6 @@ func InitRouter() *gin.Engine {
 		users := api.Group("/users")
 		{
 			users.GET("/:id", controllers.ReadUsers)
-			users.POST("/", controllers.ReadUsers)
 		}
 		friendships := api.Group("/friendships")
 		{
