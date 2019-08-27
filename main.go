@@ -4,18 +4,21 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-	"log"
 
+	"log"
+	"errors"
 	"./models"
 	"./routers"
 	"github.com/joho/godotenv"
 )
 
-func EnvLoad() {
+func EnvLoad() error {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
+		return errors.New("code must be hoge")
 	}
+	return nil
 }
 
 func main() {
