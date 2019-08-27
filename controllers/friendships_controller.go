@@ -1,10 +1,8 @@
-package v1
-
+package controllers
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 	"log"
@@ -16,6 +14,7 @@ type FollowsData struct {
 	UserID int "json:user_id"
 	FollowID int "json:follow_id"
 }
+
 
 type FollowsDBModel struct {
 	UserID int
