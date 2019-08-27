@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"fmt"
 	"../models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )

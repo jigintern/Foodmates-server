@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
-	"log"
 
 	"./models"
 	"./routers"
