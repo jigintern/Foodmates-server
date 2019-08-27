@@ -33,6 +33,10 @@ func InitRouter() *gin.Engine {
 			}
 		}
 	}
+	upload := router.Group("/upload")
+	{
+		upload.POST("/", controllers.UploadPicture)
+	}
 
 	return router
 }
