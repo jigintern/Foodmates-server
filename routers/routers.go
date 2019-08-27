@@ -1,7 +1,7 @@
 package routers
 
 import (
-	controllers "../controllers"
+	"../controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,6 +32,10 @@ func InitRouter() *gin.Engine {
 				destroy.POST("/", controllers.DestroyFriendships)
 			}
 		}
+	}
+	upload := router.Group("/upload")
+	{
+		upload.POST("/", controllers.UploadPicture)
 	}
 
 	return router
