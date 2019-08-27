@@ -25,11 +25,11 @@ func InitRouter() *gin.Engine {
 		{
 			create := friendships.Group("/create")
 			{
-				create.POST("/", controllers.CreateFriendship)
+				create.POST("/", controllers.CreateFriendships)
 			}
 			destroy := friendships.Group("/destroy")
 			{
-				destroy.POST("/", controllers.DestroyFriendship)
+				destroy.POST("/", controllers.DestroyFriendships)
 			}
 		}
 	}
