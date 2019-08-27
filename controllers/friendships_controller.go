@@ -1,25 +1,25 @@
 package controllers
 
 import (
+	"../models"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"log"
-	"../models"
 	"net/http"
 )
 
 type FollowsData struct {
-	UserID int "json:user_id"
+	UserID   int "json:user_id"
 	FollowID int "json:follow_id"
 }
 
 type FollowsDBModel struct {
-	UserID int
+	UserID   int
 	FollowID int
 }
 
-func Follow(db *gorm.DB, userId int, followId int, ctx *gin.Context) error{
+func Follow(db *gorm.DB, userId int, followId int, ctx *gin.Context) error {
 	var followsDatabase FollowsDBModel
 	followsDatabase.FollowID = followId
 	followsDatabase.UserID = userId
@@ -33,12 +33,12 @@ func Follow(db *gorm.DB, userId int, followId int, ctx *gin.Context) error{
 	return nil
 }
 
-func Unfollow(db *gorm.DB,userId int,followId int, ctx *gin.Context) error{
+func Unfollow(db *gorm.DB, userId int, followId int, ctx *gin.Context) error {
 	var followsDatabase FollowsDBModel
 	followsDatabase.FollowID = followId
 	followsDatabase.UserID = userId
 	err := db.Table("Follows").Where("user_id=? and follow_id=?", userId, followId).Delete(&followsDatabase).Error
-	ctx.JSON(http.StatusOK, gin.H{"data":followId})
+	ctx.JSON(http.StatusOK, gin.H{"data": followId})
 	fmt.Println("======== success!! ========")
 	if err != nil {
 		return err
@@ -46,28 +46,27 @@ func Unfollow(db *gorm.DB,userId int,followId int, ctx *gin.Context) error{
 	return nil
 }
 
-
-func CreateFriendships(ctx *gin.Context){
+func CreateFriendships(ctx *gin.Context) {
 	var jsonData FollowsData
 	err := ctx.BindJSON(&jsonData)
-	if err != nil{
+	if err != nil {
 		log.Fatalln(err.Error())
 	}
 	var db *gorm.DB = models.GetDB()
-	err = Follow(db,jsonData.UserID, jsonData.FollowID, ctx)
+	err = Follow(db, jsonData.UserID, jsonData.FollowID, ctx)
 	if err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func DestroyFriendships(ctx *gin.Context){
+func DestroyFriendships(ctx *gin.Context) {
 	var jsonData FollowsData
 	err := ctx.BindJSON(&jsonData)
-	if err != nil{
+	if err != nil {
 		log.Fatalln(err.Error())
 	}
 	var db *gorm.DB = models.GetDB()
-	err = Unfollow(db,jsonData.UserID, jsonData.FollowID, ctx)
+	err = Unfollow(db, jsonData.UserID, jsonData.FollowID, ctx)
 	if err != nil {
 		log.Fatalln(err)
 	}
