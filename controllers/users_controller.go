@@ -66,3 +66,8 @@ func ReadUsers(ctx *gin.Context) {
 	}
 	ctx.JSON(200, dummyUserData[id])
 }
+
+// ReadUser   POST "/api/v1/users/"
+func ReadUser(ctx *gin.Context) {
+
+}
