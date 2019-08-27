@@ -29,13 +29,6 @@ func EnvLoad() {
 	}
 }
 
-func ToString(stringPointer *string) string {
-	if stringPointer == nil {
-		return ""
-	}
-	return *stringPointer
-}
-
 func gormConnect() *gorm.DB {
 	EnvLoad()
 	USER := os.Getenv("MYSQL_USER")

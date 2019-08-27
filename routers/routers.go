@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"../controllers"
+	controllers "../controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,22 +14,22 @@ func InitRouter() *gin.Engine {
 	{
 		posts := api.Group("/posts")
 		{
-			posts.GET("/", v1.ReadPosts)
-			posts.POST("/", v1.CreatePost)
+			posts.GET("/", controllers.ReadPosts)
+			posts.POST("/", controllers.CreatePost)
 		}
 		users := api.Group("/users")
 		{
-			users.GET("/", v1.ReadUsers)
+			users.GET("/", controllers.ReadUsers)
 		}
 		friendships := api.Group("/friendships")
 		{
 			create := friendships.Group("/create")
 			{
-				create.POST("/", v1.CreateFriendships)
+				create.POST("/", controllers.CreateFriendships)
 			}
 			destroy := friendships.Group("/destroy")
 			{
-				destroy.POST("/", v1.DestroyFriendships)
+				destroy.POST("/", controllers.DestroyFriendships)
 			}
 		}
 	}
