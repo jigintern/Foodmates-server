@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"github.com/joho/godotenv"
 	"log"
+	"../models"
 	"net/http"
-	"os"
 )
 
 type FollowsData struct {
@@ -15,33 +14,9 @@ type FollowsData struct {
 	FollowID int "json:follow_id"
 }
 
-
 type FollowsDBModel struct {
 	UserID int
 	FollowID int
-}
-
-func EnvLoad() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-}
-
-func gormConnect() *gorm.DB {
-	EnvLoad()
-	USER := os.Getenv("MYSQL_USER")
-	PASS := os.Getenv("MYSQL_PASSWORD")
-	PROTOCOL := "tcp(t2.intern.jigd.info:3306)"
-	DBNAME := os.Getenv("USERS_DATABASE")
-
-	CONNECT := USER+":"+PASS+"@"+PROTOCOL+"/"+DBNAME+"?charset=utf8&parseTime=True&loc=Local"
-	db,err := gorm.Open("mysql", CONNECT)
-
-	if err != nil {
-		panic(err.Error())
-	}
-	return db
 }
 
 func Follow(db *gorm.DB, userId int, followId int, ctx *gin.Context) error{
@@ -78,8 +53,7 @@ func CreateFriendships(ctx *gin.Context){
 	if err != nil{
 		log.Fatalln(err.Error())
 	}
-	db := gormConnect()
-	db.LogMode(true)
+	var db *gorm.DB = models.GetDB()
 	err = Follow(db,jsonData.UserID, jsonData.FollowID, ctx)
 	if err != nil {
 		log.Fatalln(err)
@@ -92,8 +66,7 @@ func DestroyFriendships(ctx *gin.Context){
 	if err != nil{
 		log.Fatalln(err.Error())
 	}
-	db := gormConnect()
-	db.LogMode(true)
+	var db *gorm.DB = models.GetDB()
 	err = Unfollow(db,jsonData.UserID, jsonData.FollowID, ctx)
 	if err != nil {
 		log.Fatalln(err)
