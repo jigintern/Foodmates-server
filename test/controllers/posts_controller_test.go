@@ -18,15 +18,15 @@ func TestGetPostsSucceed(t *testing.T) {
 	router := initialize.InitServer()
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/api/v1/posts/", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/posts/readall/", nil)
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 200, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 }
 
 func TestCreatePostSucceed(t *testing.T) {
 	jsonStr := `{"user_id:"` + "2" + `","dish_id":"` + "6" + `","comment":"` + "fafafafafafafafafa" + `","image_address":"` + "hahaha.png" + `"}`
 
-	req, err := http.NewRequest("POST", "http://localhost:8080/api/v1/posts/", bytes.NewBuffer([]byte(jsonStr)))
+	req, err := http.NewRequest("POST", "http://localhost:8080/api/v1/posts/create/", bytes.NewBuffer([]byte(jsonStr)))
 	if err != nil {
 		t.Fatalf("generate request failed.")
 	}
@@ -52,7 +52,7 @@ func TestCreatePostFailed(t *testing.T) {
 	router := initialize.InitServer()
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "/api/v1/posts/", nil)
+	req, _ := http.NewRequest("POST", "/api/v1/posts/create/", nil)
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 400, w.Code)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
 }

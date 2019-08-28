@@ -13,7 +13,7 @@ func TestInitRouter(t *testing.T) {
 	router := initialize.InitServer()
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/api/v1/posts/", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/posts/readall/", nil)
 	router.ServeHTTP(w, req)
-	assert.Equal(t, 200, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 }
