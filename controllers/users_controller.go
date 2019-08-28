@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jigintern/Foodmates-server/models"
+	"net/http"
 	"strconv"
 )
 
@@ -12,8 +13,11 @@ func ReadUsers(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
+	if id == 0 {
+		ctx.JSON(http.StatusBadRequest, nil)
+	}
 	var userData models.User
 	db := *models.GetDB()
 	db.Table("Users").Where("user_id = ?", id).First(&userData)
-	ctx.JSON(200, userData)
+	ctx.JSON(http.StatusOK, userData)
 }
