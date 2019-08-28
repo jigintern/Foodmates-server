@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"../models"
+	"github.com/jigintern/Foodmates-server/models"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )

@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"../controllers"
+	"github.com/jigintern/Foodmates-server/controllers"
 	"github.com/gin-gonic/gin"
 )
 
