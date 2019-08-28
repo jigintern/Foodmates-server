@@ -2,10 +2,9 @@ package models
 
 import (
 	"fmt"
-	"os"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	"os"
 )
 
 var db *gorm.DB
@@ -18,7 +17,7 @@ func InitDB() {
 
 	var err error
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=True&loc=Local"
-	
+
 	fmt.Println("* Opening Mysql database...")
 	db, err = gorm.Open("mysql", CONNECT)
 
