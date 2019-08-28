@@ -9,25 +9,18 @@ import (
 	"strconv"
 )
 
-type PostData struct {
-	UserID  int    `json:"user_id"`
-	Content string `json:"comment"`
-	DishID  int    `json:"dish_id"`
-}
-
 // ReadPosts   GET "/api/v1/posts/readall"
 func ReadAllPosts(ctx *gin.Context) {
 	var post []models.Post
 	var db gorm.DB = *(models.GetDB())
-	fmt.Printf("db_addr____controller: %v\n", db)
 	db.Table("Posts").Find(&post)
 	fmt.Println(post)
 	ctx.JSON(http.StatusOK, post)
 }
 
-// ReadPost		GET "/api/v1/posts/read"
+// ReadPost   GET "/api/v1/posts/read/:user_id"
 func ReadSpecificUsersPost(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
 		return
 	}
