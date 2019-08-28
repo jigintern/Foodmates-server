@@ -22,6 +22,7 @@ func ReadAllPosts(ctx *gin.Context) {
 	fmt.Printf("db_addr____controller: %v\n", db)
 	db.Table("Posts").Find(&post)
 	fmt.Println(post)
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	ctx.JSON(http.StatusOK, post)
 }
 
