@@ -24,7 +24,7 @@ func InitRouter() *gin.Engine {
 			}
 			readSpecificUsersPost := posts.Group("/read", controllers.ReadSpecificUsersPost)
 			{
-				readSpecificUsersPost.GET("/:id")
+				readSpecificUsersPost.GET("/:user_id")
 			}
 		}
 		dishes := api.Group("/dishes")
