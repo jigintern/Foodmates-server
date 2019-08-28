@@ -14,17 +14,24 @@ func InitRouter() *gin.Engine {
 	{
 		posts := api.Group("/posts")
 		{
-			create := posts.Group("/create")
+			createPost := posts.Group("/create")
 			{
-				create.POST("/", controllers.CreatePost)
+				createPost.POST("/", controllers.CreatePost)
 			}
-			readAll := posts.Group("/readall")
+			readAllPosts := posts.Group("/readall")
 			{
-				readAll.GET("/", controllers.ReadAllPosts)
+				readAllPosts.GET("/", controllers.ReadAllPosts)
 			}
-			read := posts.Group("/read", controllers.ReadSpecificUsersPost)
+			readSpecificUsersPost := posts.Group("/read", controllers.ReadSpecificUsersPost)
 			{
-				read.GET("/:id")
+				readSpecificUsersPost.GET("/:id")
+			}
+		}
+		dishes := api.Group("/dishes")
+		{
+			readAllDishes := dishes.Group("/readall")
+			{
+				readAllDishes.GET("/", controllers.ReadAllDishes)
 			}
 		}
 		users := api.Group("/users")
@@ -33,19 +40,19 @@ func InitRouter() *gin.Engine {
 		}
 		friendships := api.Group("/friendships")
 		{
-			create := friendships.Group("/create")
+			createFriendship := friendships.Group("/create")
 			{
-				create.POST("/", controllers.CreateFriendships)
+				createFriendship.POST("/", controllers.CreateFriendships)
 			}
-			destroy := friendships.Group("/destroy")
+			destroyFriendship := friendships.Group("/destroy")
 			{
-				destroy.POST("/", controllers.DestroyFriendships)
+				destroyFriendship.POST("/", controllers.DestroyFriendships)
 			}
 		}
 	}
-	upload := router.Group("/upload")
+	uploadPicture := router.Group("/upload")
 	{
-		upload.POST("/", controllers.UploadPicture)
+		uploadPicture.POST("/", controllers.UploadPicture)
 	}
 
 	return router
