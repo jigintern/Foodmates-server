@@ -17,7 +17,13 @@ func ReadSpecificUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, nil)
 	}
 	var userData models.User
-	db := *models.GetDB()
+	db, err := models.GetDB()
+	
+	// DBがなければ500を返す
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
+		return
+	}
 	db.Table("Users").Where("user_id = ?", id).First(&userData)
 	ctx.JSON(http.StatusOK, userData)
 }
@@ -25,7 +31,13 @@ func ReadSpecificUser(ctx *gin.Context) {
 // ReadAllUsers   GET "/api/v1/users/"
 func ReadAllUsers(ctx *gin.Context) {
 	var userData []models.User
-	db := *models.GetDB()
+	db, err := models.GetDB()
+	
+	// DBがなければ500を返す
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
+		return
+	}
 	db.Table("Users").Find(&userData)
 	ctx.JSON(200, userData)
 }

@@ -52,7 +52,7 @@ func CreateFriendships(ctx *gin.Context) {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	var db *gorm.DB = models.GetDB()
+	db, err := models.GetDB()
 	err = Follow(db, jsonData.UserID, jsonData.FollowID, ctx)
 	if err != nil {
 		log.Fatalln(err)
@@ -65,7 +65,7 @@ func DestroyFriendships(ctx *gin.Context) {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	var db *gorm.DB = models.GetDB()
+	db, err := models.GetDB()
 	err = Unfollow(db, jsonData.UserID, jsonData.FollowID, ctx)
 	if err != nil {
 		log.Fatalln(err)
