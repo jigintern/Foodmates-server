@@ -23,6 +23,14 @@ func TestGetPostsSucceed(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 }
 
+func TestReadSpecificUsersPostSucceed(t *testing.T) {
+	router := initialize.InitServer()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/api/v1/posts/read/1", nil)
+	router.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
 func TestCreatePostSucceed(t *testing.T) {
 	jsonStr := `{"user_id:"` + "2" + `","dish_id":"` + "6" + `","comment":"` + "fafafafafafafafafa" + `","image_address":"` + "hahaha.png" + `"}`
 
@@ -53,6 +61,14 @@ func TestCreatePostFailed(t *testing.T) {
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", "/api/v1/posts/create/", nil)
+	router.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+}
+
+func TestReadSpecificUsersPostFailed(t *testing.T) {
+	router := initialize.InitServer()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/api/v1/posts/read/0", nil)
 	router.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
