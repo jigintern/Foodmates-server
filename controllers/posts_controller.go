@@ -18,9 +18,9 @@ func ReadAllPosts(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, post)
 }
 
-// ReadPost		GET "/api/v1/posts/read"
+// ReadPost   GET "/api/v1/posts/read/:user_id"
 func ReadSpecificUsersPost(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
 		return
 	}
