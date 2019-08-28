@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"github.com/jigintern/Foodmates-server/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -22,7 +23,8 @@ func ReadAllPosts(ctx *gin.Context) {
 	fmt.Printf("db_addr____controller: %v\n", db)
 	db.Table("Posts").Find(&post)
 	fmt.Println(post)
-	ctx.JSON(http.StatusOK, post)
+	poststr, err = json.Marshal(post)
+	ctx.JSON(http.StatusOK, poststr)
 }
 
 // ReadPost		GET "/api/v1/posts/read"
