@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"github.com/jigintern/Foodmates-server/controllers"
 	"github.com/gin-gonic/gin"
+	"github.com/jigintern/Foodmates-server/controllers"
 )
 
 func InitRouter() *gin.Engine {

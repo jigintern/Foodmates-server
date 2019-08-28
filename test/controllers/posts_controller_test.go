@@ -1,22 +1,22 @@
 package controllers
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"bytes"
-	"encoding/json"
-	"io/ioutil"
-	"fmt"
 
-	"../initialize"
-	"../../models"
+	"github.com/jigintern/Foodmates-server/models"
+	"github.com/jigintern/Foodmates-server/test/initialize"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetPostsSucceed(t *testing.T) {
 	router := initialize.InitServer()
-	
+
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/api/v1/posts/", nil)
 	router.ServeHTTP(w, req)
@@ -50,7 +50,7 @@ func TestCreatePostSucceed(t *testing.T) {
 
 func TestCreatePostFailed(t *testing.T) {
 	router := initialize.InitServer()
-	
+
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", "/api/v1/posts/", nil)
 	router.ServeHTTP(w, req)

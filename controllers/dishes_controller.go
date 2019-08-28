@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"../models"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/jigintern/Foodmates-server/models"
 	"github.com/jinzhu/gorm"
 	"net/http"
 )
