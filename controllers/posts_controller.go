@@ -25,7 +25,7 @@ func ReadAllPosts(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, post)
 }
 
-// ReadPost		GET "/api/v1/posts/read"
+// ReadPost   GET "/api/v1/posts/read"
 func ReadSpecificUsersPost(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
@@ -34,6 +34,7 @@ func ReadSpecificUsersPost(ctx *gin.Context) {
 	var posts []models.Post
 	var db gorm.DB = *models.GetDB()
 	db.Table("Posts").Where("user_id = ?", id).Find(&posts)
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	ctx.JSON(http.StatusOK, posts)
 }
 
