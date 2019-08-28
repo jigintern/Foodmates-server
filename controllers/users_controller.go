@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"../models"
+	"github.com/gin-gonic/gin"
 	"strconv"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 var dummyUserData = []gin.H{
@@ -64,5 +64,8 @@ func ReadUsers(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	ctx.JSON(200, dummyUserData[id])
+	var userData models.User
+	db := *models.GetDB()
+	db.Table("Users").Where("user_id = ?", id).First(&userData)
+	ctx.JSON(200, userData)
 }

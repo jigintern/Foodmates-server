@@ -15,8 +15,8 @@ import (
 func EnvLoad() error {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
-		return errors.New("code must be hoge")
+		log.Fatal("Error loading .env file.")
+		return errors.New("Error loading .env file.")
 	}
 	return nil
 }
