@@ -36,7 +36,8 @@ func InitRouter() *gin.Engine {
 		}
 		users := api.Group("/users")
 		{
-			users.GET("/:id", controllers.ReadUsers)
+			users.GET("/:id", controllers.ReadSpecificUser)
+			users.GET("/", controllers.ReadAllUsers)
 		}
 		friendships := api.Group("/friendships")
 		{
