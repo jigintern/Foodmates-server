@@ -13,18 +13,20 @@ var db *gorm.DB
 func InitDB() {
 	USER := os.Getenv("MYSQL_USER")
 	PASS := os.Getenv("MYSQL_PASSWORD")
-	PROTOCOL := "tcp(t2.intern.jigd.info:3306)"
+	PROTOCOL := "tcp(mysql_host:3306)"
 	DBNAME := os.Getenv("MYSQL_DATABASE")
 
 	var err error
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=True&loc=Local"
+	
+	fmt.Println("* Opening Mysql database...")
 	db, err = gorm.Open("mysql", CONNECT)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
-	fmt.Printf("db_addr: %v\n", db)
+	fmt.Println("* Mysql database opened!!")
 	db.LogMode(true)
 }
 
