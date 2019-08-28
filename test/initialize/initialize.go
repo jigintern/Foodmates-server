@@ -1,13 +1,12 @@
 package initialize
 
 import (
-	"log"
 	"errors"
-
-	"../../routers"
-	"../../models"
 	"github.com/gin-gonic/gin"
+	"github.com/jigintern/Foodmates-server/models"
+	"github.com/jigintern/Foodmates-server/routers"
 	"github.com/joho/godotenv"
+	"log"
 )
 
 func EnvLoad() error {
