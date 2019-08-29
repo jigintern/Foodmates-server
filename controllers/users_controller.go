@@ -9,6 +9,7 @@ import (
 
 // ReadSpecificUser   GET "/api/v1/users/:id/"
 func ReadSpecificUser(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
 		return
@@ -30,6 +31,7 @@ func ReadSpecificUser(ctx *gin.Context) {
 
 // ReadAllUsers   GET "/api/v1/users/"
 func ReadAllUsers(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var userData []models.User
 	db, err := models.GetDB()
 	

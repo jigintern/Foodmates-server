@@ -10,6 +10,7 @@ import (
 
 // ReadPosts   GET "/api/v1/posts/readall"
 func ReadAllPosts(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var post []models.Post
 	db, err := models.GetDB()
 	
@@ -20,12 +21,12 @@ func ReadAllPosts(ctx *gin.Context) {
 	}
 	db.Table("Posts").Find(&post)
 	fmt.Println(post)
-	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	ctx.JSON(http.StatusOK, post)
 }
 
 // ReadPost   GET "/api/v1/posts/read/:user_id"
 func ReadSpecificUsersPost(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	id, err := strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
 		return
@@ -33,12 +34,12 @@ func ReadSpecificUsersPost(ctx *gin.Context) {
 	var posts []models.Post
 	db, err := models.GetDB()
 	db.Table("Posts").Where("user_id = ?", id).Find(&posts)
-	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	ctx.JSON(http.StatusOK, posts)
 }
 
 // CreatePost   POST "/api/v1/posts"
 func CreatePost(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var param models.Post
 	err := ctx.BindJSON(&param)
 	if err != nil {

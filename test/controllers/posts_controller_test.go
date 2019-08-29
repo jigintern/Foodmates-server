@@ -151,10 +151,37 @@ func TestCreatePost(t *testing.T) {
 		// 送信したデータが返されること
 		t.Run("return response array of all posts", func(t *testing.T) {
 			t.Parallel()
+			sendedData := models.Post{
+				UserId: resjson.UserId,
+				DishId: resjson.DishId,
+				Comment: resjson.Comment,
+				ImageAddress: resjson.ImageAddress,
+			}
+			assert.Equal(t, testdata, sendedData)
 		})
 		
 		// ReadAllPostsで、作成した内容のデータが末尾に追加されて返ってくること
 		t.Run("when read all posts, created data is returned at last of array", func(t *testing.T) {
+			req_t, err := http.NewRequest("GET", "http://localhost:8080/api/v1/posts/readall/", nil)
+			if err != nil { t.Fatalf("\x1b[31msend request failed. (%s)\x1b[0m\n", err.Error()) }
+			client_t := &http.Client{}
+			resp_t, err := client_t.Do(req_t)
+			if err != nil { t.Fatalf("\x1b[31mrecieve request failed. (%s)\x1b[0m\n", err.Error()) }
+			
+			defer resp_t.Body.Close()
+			resbin_t, err := ioutil.ReadAll(resp_t.Body)
+			var resjson_t []models.Post
+			err = json.Unmarshal(resbin_t, &resjson_t)
+			if err != nil { t.Fatalf("\x1b[31mjson unmarshal failed. (%s)\x1b[0m\n", err.Error()) }
+			t.Logf("\n\x1b[32m======= /api/v1/posts/readall/ response =======\n%+v\x1b[0m\n", resjson_t)
+			
+			lastData := models.Post{
+				UserId: resjson_t[len(resjson_t)-1].UserId,
+				DishId: resjson_t[len(resjson_t)-1].DishId,
+				Comment: resjson_t[len(resjson_t)-1].Comment,
+				ImageAddress: resjson_t[len(resjson_t)-1].ImageAddress,
+			}
+			assert.Equal(t, testdata, lastData)
 		})
 	})
 

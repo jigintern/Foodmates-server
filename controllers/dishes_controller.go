@@ -9,6 +9,7 @@ import (
 
 // ReadAllDishes   GET "/api/v1/posts/readall"
 func ReadAllDishes(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var dish []models.Dish
 	db, err := models.GetDB()
 	
