@@ -18,7 +18,7 @@ func ReadSpecificUser(ctx *gin.Context) {
 	}
 	var userData models.User
 	db := *models.GetDB()
-	db.Table("Users").Where("user_id = ?", id).First(&userData)
+	db.Table("Users").Where("id = ?", id).First(&userData)
 	ctx.JSON(http.StatusOK, userData)
 }
 
