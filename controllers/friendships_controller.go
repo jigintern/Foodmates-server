@@ -47,12 +47,13 @@ func Unfollow(db *gorm.DB, userId int, followId int, ctx *gin.Context) error {
 }
 
 func CreateFriendships(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var jsonData FollowsData
 	err := ctx.BindJSON(&jsonData)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	var db *gorm.DB = models.GetDB()
+	db, err := models.GetDB()
 	err = Follow(db, jsonData.UserID, jsonData.FollowID, ctx)
 	if err != nil {
 		log.Fatalln(err)
@@ -60,12 +61,13 @@ func CreateFriendships(ctx *gin.Context) {
 }
 
 func DestroyFriendships(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var jsonData FollowsData
 	err := ctx.BindJSON(&jsonData)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	var db *gorm.DB = models.GetDB()
+	db, err := models.GetDB()
 	err = Unfollow(db, jsonData.UserID, jsonData.FollowID, ctx)
 	if err != nil {
 		log.Fatalln(err)

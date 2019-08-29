@@ -20,28 +20,30 @@ type StatusData struct {
 }
 
 func BadRequestError(err error, ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	ctx.JSON(http.StatusBadRequest, err.Error())
 	log.Fatalln(err.Error())
 }
 
-func UploadPicture(context *gin.Context) {
-	file, header, err := context.Request.FormFile("file")
+func UploadPicture(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	file, header, err := ctx.Request.FormFile("file")
 	buf := bytes.NewBuffer(nil)
 	_, err = io.Copy(buf, file)
 	if err != nil {
-		BadRequestError(err, context)
+		BadRequestError(err, ctx)
 	}
 	fileName := filepath.Base(header.Filename)
 	_, _, err = image.DecodeConfig(buf)
 	if err != nil {
-		BadRequestError(err, context)
+		BadRequestError(err, ctx)
 	}
 	now := time.Now().Format("20060102150405")
-	err = context.SaveUploadedFile(header, "./uploads/"+now+"_"+fileName)
+	err = ctx.SaveUploadedFile(header, "./uploads/"+now+"_"+fileName)
 	if err != nil {
-		BadRequestError(err, context)
+		BadRequestError(err, ctx)
 	}
 	data := StatusData{Status: http.StatusOK, FileName: now + fileName}
 	status, _ := json.Marshal(data)
-	context.JSON(http.StatusOK, string(status))
+	ctx.JSON(http.StatusOK, string(status))
 }
