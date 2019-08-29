@@ -1,5 +1,6 @@
 package controllers
 
+/*
 import (
 	"encoding/json"
 	"github.com/jigintern/Foodmates-server/models"
@@ -57,3 +58,4 @@ func TestReadUserSucceed(t *testing.T) {
 		})
 	})
 }
+*/
