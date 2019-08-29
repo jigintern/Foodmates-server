@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"errors"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"os"
@@ -29,7 +30,9 @@ func InitDB() {
 	db.LogMode(true)
 }
 
-func GetDB() *gorm.DB {
-	fmt.Printf("db_addr: %v\n", db)
-	return db
+func GetDB() (*gorm.DB, error) {
+	if db == nil {
+		return nil, errors.New("database reference is null")
+	}
+	return db, nil
 }
