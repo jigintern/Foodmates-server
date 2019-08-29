@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-// TestReadAllPosts   全ての投稿を取得するAPIのテスト
+// TestReadAllDishes   全ての料理を取得するAPIのテスト
 func TestReadAllDishes(t *testing.T) {
 
 	// 初期処理
