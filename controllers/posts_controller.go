@@ -47,9 +47,26 @@ func CreatePost(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"status": "The request couldn't bind to json."})
 		return
 	}
+	
 	db, err := models.GetDB()
-	db.Table("Posts").Create(&param)
-	ctx.JSON(http.StatusOK, gin.H{"data": param})
-	fmt.Println("======== success!! ========")
+	tx := db.Table("Posts").Begin()
+	tx.Create(&param)
+	if tx.Error != nil {
+		fmt.Println("\x1b[31mstarting transition failed.\x1b[0m")
+		tx.Rollback()
+		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "starting transition failed."})
+		return
+	}
+	//db.Table("Posts").Create(&param)
+	if len(db.GetErrors()) != 0 {
+		fmt.Println("\x1b[31mchanging database failed.\x1b[0m")
+		tx.Rollback()
+		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "changing database failed."})
+		return
+	}
+	
+	tx.Commit()
+	ctx.JSON(http.StatusOK, param)
+	fmt.Println("\x1b[32msuccess!!\x1b[0m")
 	fmt.Println(param)
 }
