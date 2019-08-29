@@ -44,7 +44,7 @@ func TestReadAllDishes(t *testing.T) {
 		})
 
 		// 全ての投稿データがDishの配列として返されること
-		t.Run("response type is []Post", func(t *testing.T) {
+		t.Run("response type is []Dish", func(t *testing.T) {
 			t.Parallel()
 			assert.NotEmpty(t, resjson)
 		})
@@ -52,7 +52,7 @@ func TestReadAllDishes(t *testing.T) {
 		// 配列の全要素の形式が正しいこと
 		t.Run("all of response datas are correct format", func(t *testing.T) {
 			t.Parallel()
-			var resjson models.Post
+			var resjson models.Dish
 			err = json.Unmarshal(resbin, &resjson)
 			fmt.Println(resjson)
 		})
