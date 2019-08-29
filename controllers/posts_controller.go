@@ -31,6 +31,9 @@ func ReadSpecificUsersPost(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
+	if id == 0 {
+		ctx.JSON(http.StatusBadRequest, nil)
+	}
 	var posts []models.Post
 	db, err := models.GetDB()
 	db.Table("Posts").Where("user_id = ?", id).Find(&posts)
