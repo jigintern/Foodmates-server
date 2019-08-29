@@ -1,5 +1,6 @@
 package controllers
 
+/*
 import (
 	"net/http"
 	"net/http/httptest"
@@ -26,3 +27,4 @@ func TestReadUserFailed(t *testing.T) {
 	router.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
+*/
