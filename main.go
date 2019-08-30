@@ -1,6 +1,9 @@
 package main
 
 import (
+	"os"
+	"os/signal"
+	"syscall"
 	"errors"
 	"fmt"
 	"github.com/jigintern/Foodmates-server/models"
@@ -42,5 +45,13 @@ func main() {
 	}
 	server.ListenAndServe()
 	fmt.Printf("* Now server is listening!!\n")
-
+	
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+	
+	models.Finalize()
+	fmt.Println("* Database closed.")
+	server.Close()
+	fmt.Println("* Server closed.")
 }

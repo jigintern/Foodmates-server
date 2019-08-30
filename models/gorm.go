@@ -36,3 +36,8 @@ func GetDB() (*gorm.DB, error) {
 	}
 	return db, nil
 }
+
+func Finalize() error {
+	err := db.Close()
+	return err
+}

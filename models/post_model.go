@@ -14,3 +14,9 @@ type Post struct {
 	Comment      string    `gorm:"default:''" json:"comment"`
 	ImageAddress string    `gorm:"default:''" json:"image_address"`
 }
+
+type PostResponse struct {
+	Post
+	User
+	Dish
+}
