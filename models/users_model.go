@@ -15,5 +15,4 @@ type User struct {
 	Country     string    `gorm:"default:''" json:"country"`
 	Prefecture  string    `gorm:"default:''" json:"prefecture"`
 	IconAddress string    `gorm:"default:''" json:"icon_address"`
-	Birth       time.Time `json:"birth"`
 }

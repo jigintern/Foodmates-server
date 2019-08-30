@@ -45,7 +45,7 @@ func ReadSpecificUsersPost(ctx *gin.Context) {
 		Where("user_id = ?", id).
 		Joins("left join Users on Posts.user_id = Users.id").
 		Joins("left join Dishes on Posts.dish_id = Dishes.id").
-		Find(&result)
+		Find(&posts)
 	// db.Table("Posts").Where("user_id = ?", id).Find(&posts)
 	ctx.JSON(http.StatusOK, posts)
 }

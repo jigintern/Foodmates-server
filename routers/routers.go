@@ -33,6 +33,10 @@ func InitRouter() *gin.Engine {
 			{
 				readAllDishes.GET("/", controllers.ReadAllDishes)
 			}
+			createDish := dishes.Group("/create")
+			{
+				createDish.POST("/", controllers.CreateDish)
+			}
 		}
 		users := api.Group("/users")
 		{
