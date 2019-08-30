@@ -9,7 +9,7 @@ type User struct {
 	ID          int       `gorm:"primary_key" json:"id"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
-	Name        string    `gorm:"default:''" json:"name"`
+	Name        string    `gorm:"default:''" json:"user_name"`
 	Biography   string    `gorm:"default:''" json:"biography"`
 	Birth       time.Time `json:"birth" sql:"type:date"`
 	Country     string    `gorm:"default:''" json:"country"`

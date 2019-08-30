@@ -11,7 +11,7 @@ import (
 // ReadPosts   GET "/api/v1/posts/readall"
 func ReadAllPosts(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	var post []models.Post
+	var result []models.PostResponse
 	db, err := models.GetDB()
 	
 	// DBがなければ500を返す
@@ -19,9 +19,13 @@ func ReadAllPosts(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
 		return
 	}
-	db.Table("Posts").Find(&post)
-	fmt.Println(post)
-	ctx.JSON(http.StatusOK, post)
+	db.Table("Posts").
+		Unscoped().
+		Joins("left join Users on Posts.user_id = Users.id").
+		Joins("left join Dishes on Posts.dish_id = Dishes.id").
+		Find(&result)
+	fmt.Println(result)
+	ctx.JSON(http.StatusOK, result)
 }
 
 // ReadPost   GET "/api/v1/posts/read/:user_id"
@@ -36,7 +40,13 @@ func ReadSpecificUsersPost(ctx *gin.Context) {
 	}
 	var posts []models.Post
 	db, err := models.GetDB()
-	db.Table("Posts").Where("user_id = ?", id).Find(&posts)
+	db.Table("Posts").
+		Unscoped().
+		Where("user_id = ?", id).
+		Joins("left join Users on Posts.user_id = Users.id").
+		Joins("left join Dishes on Posts.dish_id = Dishes.id").
+		Find(&posts)
+	// db.Table("Posts").Where("user_id = ?", id).Find(&posts)
 	ctx.JSON(http.StatusOK, posts)
 }
 
