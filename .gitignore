@@ -8,6 +8,10 @@ docker/log
 *.dll
 *.so
 *.dylib
+*.jpg
+*.JPG
+*.PNG
+*.png
 
 # Test binary, built with `go test -c`
 *.test
