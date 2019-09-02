@@ -7,20 +7,11 @@ import (
 	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
+	"strconv"
 )
 
-type FollowsData struct {
-	UserID   int "json:user_id"
-	FollowID int "json:follow_id"
-}
-
-type FollowsDBModel struct {
-	UserID   int
-	FollowID int
-}
-
 func Follow(db *gorm.DB, userId int, followId int, ctx *gin.Context) error {
-	var followsDatabase FollowsDBModel
+	var followsDatabase models.FollowsDBModel
 	followsDatabase.FollowID = followId
 	followsDatabase.UserID = userId
 	result := db.Table("Follows").Where(&followsDatabase).Create(&followsDatabase)
@@ -34,7 +25,7 @@ func Follow(db *gorm.DB, userId int, followId int, ctx *gin.Context) error {
 }
 
 func Unfollow(db *gorm.DB, userId int, followId int, ctx *gin.Context) error {
-	var followsDatabase FollowsDBModel
+	var followsDatabase models.FollowsDBModel
 	followsDatabase.FollowID = followId
 	followsDatabase.UserID = userId
 	err := db.Table("Follows").Where("user_id=? and follow_id=?", userId, followId).Delete(&followsDatabase).Error
@@ -48,7 +39,7 @@ func Unfollow(db *gorm.DB, userId int, followId int, ctx *gin.Context) error {
 
 func CreateFriendships(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	var jsonData FollowsData
+	var jsonData models.FollowsData
 	err := ctx.BindJSON(&jsonData)
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -60,9 +51,22 @@ func CreateFriendships(ctx *gin.Context) {
 	}
 }
 
+func CountFriendhsips(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, nil)
+		log.Fatalln(err.Error())
+	}
+	db, err := models.GetDB()
+	count := 0
+	db.Table("Follows").Where("user_id=?", id).Count(&count)
+	ctx.JSON(http.StatusOK, gin.H{"following": count})
+}
+
 func DestroyFriendships(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	var jsonData FollowsData
+	var jsonData models.FollowsData
 	err := ctx.BindJSON(&jsonData)
 	if err != nil {
 		log.Fatalln(err.Error())

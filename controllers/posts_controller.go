@@ -12,7 +12,8 @@ import (
 // ReadPosts   GET "/api/v1/posts/readall"
 func ReadAllPosts(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	var result []models.PostResponse
+	ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+	var results []models.PostResponse
 	db, err := models.GetDB()
 
 	// DBがなければ500を返す
@@ -20,13 +21,9 @@ func ReadAllPosts(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
 		return
 	}
-	db.Table("Posts").
-		Unscoped().
-		Joins("left join Users on Posts.user_id = Users.id").
-		Joins("left join Dishes on Posts.dish_id = Dishes.id").
-		Find(&result)
-	fmt.Println(result)
-	ctx.JSON(http.StatusOK, result)
+	db.Raw("SELECT Posts.id, Posts.`user_id`, Posts.`created_at`, Posts.`updated_at`, Posts.`dish_id`, Posts.`comment`, Posts.`image_address`, Users.`name`, Users.`biography`, Users.`birth`, Users.`country`, Users.`prefecture`, Users.`icon_address`, Dishes.`dish_name`, Dishes.`store_name` FROM `Posts` LEFT OUTER JOIN `Users` ON `Posts`.`user_id` = `Users`.`id` LEFT OUTER JOIN `Dishes` ON `Posts`.`dish_id` = `Dishes`.`id` ORDER BY Posts.created_at DESC").Scan(&results)
+	fmt.Println(results)
+	ctx.JSON(http.StatusOK, results)
 }
 
 // ReadPost   GET "/api/v1/posts/read/:user_id"
@@ -39,16 +36,15 @@ func ReadSpecificUsersPost(ctx *gin.Context) {
 	if id == 0 {
 		ctx.JSON(http.StatusBadRequest, nil)
 	}
-	var posts []models.Post
+	var results []models.PostResponse
 	db, err := models.GetDB()
-	db.Table("Posts").
-		Unscoped().
-		Where("user_id = ?", id).
-		Joins("left join Users on Posts.user_id = Users.id").
-		Joins("left join Dishes on Posts.dish_id = Dishes.id").
-		Find(&posts)
-	// db.Table("Posts").Where("user_id = ?", id).Find(&posts)
-	ctx.JSON(http.StatusOK, posts)
+	// DBがなければ500を返す
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
+		return
+	}
+	db.Raw("SELECT Posts.id, Posts.`user_id`, Posts.`created_at`, Posts.`updated_at`, Posts.`dish_id`, Posts.`comment`, Posts.`image_address`, Users.`name`, Users.`biography`, Users.`birth`, Users.`country`, Users.`prefecture`, Users.`icon_address`, Dishes.`dish_name`, Dishes.`store_name` FROM `Posts` LEFT OUTER JOIN `Users` ON `Posts`.`user_id` = `Users`.`id` LEFT OUTER JOIN `Dishes` ON `Posts`.`dish_id` = `Dishes`.`id` WHERE Posts.user_id = ? ORDER BY Posts.created_at DESC", id).Scan(&results)
+	ctx.JSON(http.StatusOK, results)
 }
 
 // CreatePost   POST "/api/v1/posts"
