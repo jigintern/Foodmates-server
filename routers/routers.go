@@ -53,6 +53,10 @@ func InitRouter() *gin.Engine {
 			{
 				destroyFriendship.POST("/", controllers.DestroyFriendships)
 			}
+			countFriendship := friendships.Group("/count")
+			{
+				countFriendship.GET("/:id", controllers.CountFriendhsips)
+			}
 		}
 	}
 	uploadPicture := router.Group("/upload")
