@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type FollowsData struct {
@@ -58,6 +59,19 @@ func CreateFriendships(ctx *gin.Context) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func CountFriendhsips(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, nil)
+		log.Fatalln(err.Error())
+	}
+	db, err := models.GetDB()
+	count := 0
+	db.Table("Follows").Where("user_id=?", id).Count(&count)
+	ctx.JSON(http.StatusOK, gin.H{"following": count})
 }
 
 func DestroyFriendships(ctx *gin.Context) {
