@@ -13,17 +13,13 @@ func ReadAllPosts(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var result []models.PostResponse
 	db, err := models.GetDB()
-	
+
 	// DBがなければ500を返す
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
 		return
 	}
-	db.Table("Posts").
-		Unscoped().
-		Joins("left join Users on Posts.user_id = Users.id").
-		Joins("left join Dishes on Posts.dish_id = Dishes.id").
-		Find(&result)
+	db.Raw("SELECT * FROM `Posts` left outer join `Users` on `Posts`.`user_id` = `Users`.`id` left outer join `Dishes` on `Posts`.`dish_id` = `Dishes`.`id`").Scan(&result)
 	fmt.Println(result)
 	ctx.JSON(http.StatusOK, result)
 }
@@ -38,16 +34,15 @@ func ReadSpecificUsersPost(ctx *gin.Context) {
 	if id == 0 {
 		ctx.JSON(http.StatusBadRequest, nil)
 	}
-	var posts []models.Post
+	var results []models.PostResponse
 	db, err := models.GetDB()
-	db.Table("Posts").
-		Unscoped().
-		Where("user_id = ?", id).
-		Joins("left join Users on Posts.user_id = Users.id").
-		Joins("left join Dishes on Posts.dish_id = Dishes.id").
-		Find(&posts)
-	// db.Table("Posts").Where("user_id = ?", id).Find(&posts)
-	ctx.JSON(http.StatusOK, posts)
+	// DBがなければ500を返す
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
+		return
+	}
+	db.Raw("SELECT * FROM `Posts` left outer join Users on Posts.user_id = Users.id left outer join Dishes on Posts.dish_id = Dishes.id WHERE user_id = ? ", id).Scan(&results)
+	ctx.JSON(http.StatusOK, results)
 }
 
 // CreatePost   POST "/api/v1/posts"
@@ -60,7 +55,7 @@ func CreatePost(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"status": "The request couldn't bind to json."})
 		return
 	}
-	
+
 	db, err := models.GetDB()
 	tx := db.Table("Posts").Begin()
 	tx.Create(&param)
@@ -70,14 +65,13 @@ func CreatePost(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "starting transition failed."})
 		return
 	}
-	//db.Table("Posts").Create(&param)
 	if len(db.GetErrors()) != 0 {
 		fmt.Println("\x1b[31mchanging database failed.\x1b[0m")
 		tx.Rollback()
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "changing database failed."})
 		return
 	}
-	
+
 	tx.Commit()
 	ctx.JSON(http.StatusOK, param)
 	fmt.Println("\x1b[32msuccess!!\x1b[0m")
