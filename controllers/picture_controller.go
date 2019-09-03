@@ -43,7 +43,7 @@ func UploadPicture(ctx *gin.Context) {
 	if err != nil {
 		BadRequestError(err, ctx)
 	}
-	data := StatusData{Status: http.StatusOK, FileName: now + fileName}
+	data := StatusData{Status: http.StatusOK, FileName: "/uploads/" + now + fileName}
 	status, _ := json.Marshal(data)
 	ctx.JSON(http.StatusOK, string(status))
 }

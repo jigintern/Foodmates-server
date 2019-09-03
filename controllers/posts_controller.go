@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jigintern/Foodmates-server/models"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -14,6 +15,7 @@ func ReadAllPosts(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 	var results []models.PostResponse
 	db, err := models.GetDB()
+
 	// DBがなければ500を返す
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
@@ -77,4 +79,32 @@ func CreatePost(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, param)
 	fmt.Println("\x1b[32msuccess!!\x1b[0m")
 	fmt.Println(param)
+}
+
+// SuggestUser   GET "/api/v1/posts/suggest/:id"
+func SuggestUser(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	var records models.Post
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, nil)
+		log.Fatalln(err.Error())
+	}
+	db, err := models.GetDB()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, nil)
+		log.Fatalln(err.Error())
+	}
+	count := 0
+	err = db.Table("Posts").Where("id=?", id).First(&records).Error
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, nil)
+	}
+	fmt.Println(records)
+	err = db.Table("Posts").Where("dish_id=?", records.DishId).Count(&count).Error
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, nil)
+	}
+	fmt.Println(count)
+	ctx.JSON(http.StatusOK, gin.H{"count": count - 1})
 }

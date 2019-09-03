@@ -26,6 +26,10 @@ func InitRouter() *gin.Engine {
 			{
 				readSpecificUsersPost.GET("/:user_id")
 			}
+			readSuggestUser := posts.Group("/suggest")
+			{
+				readSuggestUser.GET("/:id", controllers.SuggestUser)
+			}
 		}
 		dishes := api.Group("/dishes")
 		{
