@@ -37,7 +37,6 @@ func ReadAllPosts(ctx *gin.Context) {
 		return
 	}
 	db.Raw("SELECT Posts.id, Posts.`user_id`, Posts.`created_at`, Posts.`updated_at`, Posts.`dish_id`, Posts.`comment`, Posts.`image_address`, Users.`name`, Users.`biography`, Users.`birth`, Users.`country`, Users.`prefecture`, Users.`icon_address`, Dishes.`dish_name`, Dishes.`store_name` FROM `Posts` LEFT OUTER JOIN `Users` ON `Posts`.`user_id` = `Users`.`id` LEFT OUTER JOIN `Dishes` ON `Posts`.`dish_id` = `Dishes`.`id` ORDER BY Posts.created_at DESC").Scan(&results)
-	fmt.Println(results)
 	ctx.JSON(http.StatusOK, results)
 }
 
@@ -101,7 +100,6 @@ func Suggest(id int, db *gorm.DB) []models.Suggest {
 	db.Table("Posts").Where("user_id=?", id).Order("created_at desc").Find(&records)
 	count := 0
 	db.Table("Users").Count(&count)
-	fmt.Println(records)
 	var suggestUsers []models.Suggest
 	var dishes []int
 	var users []int
@@ -110,7 +108,6 @@ func Suggest(id int, db *gorm.DB) []models.Suggest {
 			var r []models.Post
 			dishes = append(dishes, record.DishId)
 			recordNotFound := db.Table("Posts").Where("not(user_id=?) and dish_id = ?", id, record.DishId).Group("user_id").Find(&r).RecordNotFound()
-			fmt.Println(record)
 			if !recordNotFound {
 				for _, user := range r {
 					users = append(users, user.UserId)
@@ -119,12 +116,10 @@ func Suggest(id int, db *gorm.DB) []models.Suggest {
 		}
 	}
 	users = Ints(users)
-	fmt.Println(users)
 	for _, user := range users {
 		count := 0
 		var r []models.Post
 		db.Table("Posts").Where("user_id=? and dish_id in (?) and not(user_id=?)", user, dishes, id).Order("created_at desc").Find(&r).Count(&count)
-		fmt.Println(r)
 		if count != 0 {
 			var s models.Suggest
 			s.UserId = user
@@ -132,7 +127,6 @@ func Suggest(id int, db *gorm.DB) []models.Suggest {
 			suggestUsers = append(suggestUsers, s)
 		}
 	}
-	fmt.Println(suggestUsers)
 	return suggestUsers
 }
 
