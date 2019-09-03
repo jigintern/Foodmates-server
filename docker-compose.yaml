@@ -7,13 +7,14 @@ services:
       - db
     ports:
       - "8080:8080"
-    # command: bash -c 'go mod download && go run main.go'
-    command: bash -c 'go mod download && /bin/bash'
+    command: bash -c 'go mod download && go run main.go'
     environment:
       PORT: "8080"
     tty: true
     volumes:
       - ".:/go/src/github.com/jigintern/Foodmates-server"
+    restart: always
+    user: "${UID}:${GID}"
 
   db:
     container_name: mysql_host
