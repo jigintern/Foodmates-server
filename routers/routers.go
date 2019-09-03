@@ -66,7 +66,7 @@ func InitRouter() *gin.Engine {
 				isFollowing.POST("/", controllers.IsFollowing)
 			}
 		}
-		uploadPicture := router.Group("/upload")
+		uploadPicture := api.Group("/upload")
 		{
 			uploadPicture.POST("/", controllers.UploadPicture)
 		}
