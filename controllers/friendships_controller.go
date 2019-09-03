@@ -45,7 +45,9 @@ func CreateFriendships(ctx *gin.Context) {
 		log.Fatalln(err.Error())
 	}
 	db, err := models.GetDB()
-	err = Follow(db, jsonData.UserID, jsonData.FollowID, ctx)
+	if jsonData.UserID != jsonData.FollowID {
+		err = Follow(db, jsonData.UserID, jsonData.FollowID, ctx)
+	}
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -75,5 +77,28 @@ func DestroyFriendships(ctx *gin.Context) {
 	err = Unfollow(db, jsonData.UserID, jsonData.FollowID, ctx)
 	if err != nil {
 		log.Fatalln(err)
+	}
+}
+
+func IsFollowing(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	var request models.FollowsData
+	var response models.FollowsDBModel
+	err := ctx.BindJSON(&request)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, nil)
+		log.Fatalln(err.Error())
+	}
+	db, err := models.GetDB()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, nil)
+		log.Fatalln(err.Error())
+	}
+	count := 0
+	db.Table("Follows").Where("user_id=? and follow_id=?", request.UserID, request.FollowID).First(&response).Count(&count)
+	if count == 1 {
+		ctx.JSON(http.StatusOK, gin.H{"following": true})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{"following": false})
 	}
 }
