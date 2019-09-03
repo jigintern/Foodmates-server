@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jigintern/Foodmates-server/models"
+	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
 	"strconv"
@@ -81,10 +82,32 @@ func CreatePost(ctx *gin.Context) {
 	fmt.Println(param)
 }
 
+func Suggest(id int, db *gorm.DB) []int {
+	var records []models.Post
+	db.Table("Posts").Where("user_id=?", id).Limit(4).Order("created_at desc").Find(&records)
+	fmt.Println(records)
+	var suggestUsers []int
+	for _, record := range records {
+		if record.DishId != 0 {
+			var r models.Post
+			recordNotFound := db.Table("Posts").Where("dish_id=? and not(user_id=?)", record.DishId, id).Limit(4).Order("created_at desc").Find(&r).RecordNotFound()
+			if !recordNotFound {
+				fmt.Println(r)
+				suggestUsers = append(suggestUsers, r.UserId)
+			}
+		}
+	}
+	if len(suggestUsers) == 0 {
+		return nil
+	} else {
+		fmt.Println(suggestUsers)
+		return suggestUsers
+	}
+}
+
 // SuggestUser   GET "/api/v1/posts/suggest/:id"
 func SuggestUser(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	var records models.Post
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, nil)
@@ -95,16 +118,6 @@ func SuggestUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, nil)
 		log.Fatalln(err.Error())
 	}
-	count := 0
-	err = db.Table("Posts").Where("id=?", id).First(&records).Error
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, nil)
-	}
-	fmt.Println(records)
-	err = db.Table("Posts").Where("dish_id=?", records.DishId).Count(&count).Error
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, nil)
-	}
-	fmt.Println(count)
-	ctx.JSON(http.StatusOK, gin.H{"count": count - 1})
+	response := Suggest(id, db)
+	ctx.JSON(http.StatusOK, gin.H{"suggest_users": response})
 }
