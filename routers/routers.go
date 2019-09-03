@@ -61,6 +61,10 @@ func InitRouter() *gin.Engine {
 			{
 				countFriendship.GET("/:id", controllers.CountFriendhsips)
 			}
+			isFollowing := friendships.Group("/isfollowing")
+			{
+				isFollowing.POST("/", controllers.IsFollowing)
+			}
 		}
 	}
 	uploadPicture := router.Group("/upload")
