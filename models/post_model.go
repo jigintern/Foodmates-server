@@ -26,3 +26,8 @@ type PostResponse struct {
 	DishName    string    `gorm:"default:''" json:"dish_name"`
 	StoreName   string    `gorm:"default:''" json:"store_name"`
 }
+
+type Suggest struct {
+	UserId int `gorm:"default:0" json:"user_id"`
+	Times  int `gorm:"default:0" json:"times"`
+}

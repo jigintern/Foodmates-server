@@ -10,6 +10,20 @@ import (
 	"strconv"
 )
 
+func Ints(input []int) []int {
+	u := make([]int, 0, len(input))
+	m := make(map[int]bool)
+
+	for _, val := range input {
+		if _, ok := m[val]; !ok {
+			m[val] = true
+			u = append(u, val)
+		}
+	}
+
+	return u
+}
+
 // ReadPosts   GET "/api/v1/posts/readall"
 func ReadAllPosts(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -82,27 +96,44 @@ func CreatePost(ctx *gin.Context) {
 	fmt.Println(param)
 }
 
-func Suggest(id int, db *gorm.DB) []int {
+func Suggest(id int, db *gorm.DB) []models.Suggest {
 	var records []models.Post
-	db.Table("Posts").Where("user_id=?", id).Limit(4).Order("created_at desc").Find(&records)
+	db.Table("Posts").Where("user_id=?", id).Order("created_at desc").Find(&records)
+	count := 0
+	db.Table("Users").Count(&count)
 	fmt.Println(records)
-	var suggestUsers []int
+	var suggestUsers []models.Suggest
+	var dishes []int
+	var users []int
 	for _, record := range records {
 		if record.DishId != 0 {
-			var r models.Post
-			recordNotFound := db.Table("Posts").Where("dish_id=? and not(user_id=?)", record.DishId, id).Limit(4).Order("created_at desc").Find(&r).RecordNotFound()
+			var r []models.Post
+			dishes = append(dishes, record.DishId)
+			recordNotFound := db.Table("Posts").Where("not(user_id=?) and dish_id = ?", id, record.DishId).Group("user_id").Find(&r).RecordNotFound()
+			fmt.Println(record)
 			if !recordNotFound {
-				fmt.Println(r)
-				suggestUsers = append(suggestUsers, r.UserId)
+				for _, user := range r {
+					users = append(users, user.UserId)
+				}
 			}
 		}
 	}
-	if len(suggestUsers) == 0 {
-		return nil
-	} else {
-		fmt.Println(suggestUsers)
-		return suggestUsers
+	users = Ints(users)
+	fmt.Println(users)
+	for _, user := range users {
+		count := 0
+		var r []models.Post
+		db.Table("Posts").Where("user_id=? and dish_id in (?) and not(user_id=?)", user, dishes, id).Order("created_at desc").Find(&r).Count(&count)
+		fmt.Println(r)
+		if count != 0 {
+			var s models.Suggest
+			s.UserId = user
+			s.Times = count
+			suggestUsers = append(suggestUsers, s)
+		}
 	}
+	fmt.Println(suggestUsers)
+	return suggestUsers
 }
 
 // SuggestUser   GET "/api/v1/posts/suggest/:id"
@@ -119,5 +150,5 @@ func SuggestUser(ctx *gin.Context) {
 		log.Fatalln(err.Error())
 	}
 	response := Suggest(id, db)
-	ctx.JSON(http.StatusOK, gin.H{"suggest_users": response})
+	ctx.JSON(http.StatusOK, response)
 }
