@@ -39,11 +39,11 @@ func UploadPicture(ctx *gin.Context) {
 		BadRequestError(err, ctx)
 	}
 	now := time.Now().Format("20060102150405")
-	err = ctx.SaveUploadedFile(header, "./uploads/"+now+"_"+fileName)
+	err = ctx.SaveUploadedFile(header, "./uploads/pictures/"+now+"_"+fileName)
 	if err != nil {
 		BadRequestError(err, ctx)
 	}
-	data := StatusData{Status: http.StatusOK, FileName: "/uploads/" + now + "_" + fileName}
+	data := StatusData{Status: http.StatusOK, FileName: "/uploads/pictures/" + now + "_" + fileName}
 	status, _ := json.Marshal(data)
 	ctx.JSON(http.StatusOK, string(status))
 }
