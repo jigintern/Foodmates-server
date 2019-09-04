@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jigintern/Foodmates-server/models"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -43,4 +45,39 @@ func ReadAllUsers(ctx *gin.Context) {
 	}
 	db.Table("Users").Find(&userData)
 	ctx.JSON(200, userData)
+}
+
+// SignUp   POST "/api/v1/users/create"
+func SignUp(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	var signupParams models.SignUpParams
+	err := ctx.BindJSON(&signupParams)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, nil)
+		log.Fatalln(err)
+	}
+	db, err := models.GetDB()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, nil)
+		log.Fatalln(err)
+	}
+	tx := db.Table("Users").Begin()
+	tx.Create(&signupParams)
+	if tx.Error != nil {
+		fmt.Println("\x1b[31mstarting transition failed.\x1b[0m")
+		tx.Rollback()
+		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "starting transition failed."})
+		return
+	}
+
+	if len(db.GetErrors()) != 0 {
+		fmt.Println("\x1b[31mchanging database failed.\x1b[0m")
+		tx.Rollback()
+		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "changing database failed."})
+		return
+	}
+	tx.Commit()
+	ctx.JSON(http.StatusOK, nil)
+	fmt.Println("\x1b[32msuccess!!\x1b[0m")
+	fmt.Println(signupParams)
 }
