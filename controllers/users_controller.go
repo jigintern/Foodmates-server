@@ -14,19 +14,20 @@ func ReadSpecificUser(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	if id == 0 {
-		ctx.JSON(http.StatusBadRequest, nil)
-	}
 	var userData models.User
 	db, err := models.GetDB()
-	
+
 	// DBがなければ500を返す
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
 		return
 	}
-	db.Table("Users").Where("id = ?", id).First(&userData)
-	ctx.JSON(http.StatusOK, userData)
+	recordNotFound := db.Table("Users").Where("id = ?", id).First(&userData).RecordNotFound()
+	if recordNotFound {
+		ctx.JSON(http.StatusBadRequest, nil)
+	} else {
+		ctx.JSON(http.StatusOK, userData)
+	}
 }
 
 // ReadAllUsers   GET "/api/v1/users/"
@@ -34,7 +35,7 @@ func ReadAllUsers(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var userData []models.User
 	db, err := models.GetDB()
-	
+
 	// DBがなければ500を返す
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
