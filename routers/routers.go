@@ -22,9 +22,9 @@ func InitRouter() *gin.Engine {
 			{
 				readAllPosts.GET("/", controllers.ReadAllPosts)
 			}
-			readSpecificUsersPost := posts.Group("/read", controllers.ReadSpecificUsersPost)
+			readSpecificUsersPost := posts.Group("/read")
 			{
-				readSpecificUsersPost.GET("/:user_id")
+				readSpecificUsersPost.GET("/:login_name", controllers.ReadSpecificUsersPost)
 			}
 			readSuggestUser := posts.Group("/suggest")
 			{
