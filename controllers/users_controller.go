@@ -6,16 +6,12 @@ import (
 	"github.com/jigintern/Foodmates-server/models"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 // ReadSpecificUser   GET "/api/v1/users/:id/"
 func ReadSpecificUser(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	id, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		return
-	}
+	id := ctx.Param("id")
 	var userData models.User
 	db, err := models.GetDB()
 
@@ -24,7 +20,7 @@ func ReadSpecificUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
 		return
 	}
-	recordNotFound := db.Table("Users").Where("id = ?", id).First(&userData).RecordNotFound()
+	recordNotFound := db.Table("Users").Where("login_name = ?", id).First(&userData).RecordNotFound()
 	if recordNotFound {
 		ctx.JSON(http.StatusBadRequest, nil)
 	} else {
