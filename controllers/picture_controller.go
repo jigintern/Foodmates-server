@@ -47,3 +47,26 @@ func UploadPicture(ctx *gin.Context) {
 	status, _ := json.Marshal(data)
 	ctx.JSON(http.StatusOK, string(status))
 }
+
+func UploadIcon(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	file, header, err := ctx.Request.FormFile("file")
+	buf := bytes.NewBuffer(nil)
+	_, err = io.Copy(buf, file)
+	if err != nil {
+		BadRequestError(err, ctx)
+	}
+	fileName := filepath.Base(header.Filename)
+	_, _, err = image.DecodeConfig(buf)
+	if err != nil {
+		BadRequestError(err, ctx)
+	}
+	now := time.Now().Format("20060102150405")
+	err = ctx.SaveUploadedFile(header, "./uploads/icons/"+now+"_"+fileName)
+	if err != nil {
+		BadRequestError(err, ctx)
+	}
+	data := StatusData{Status: http.StatusOK, FileName: "/uploads/icons/" + now + "_" + fileName}
+	status, _ := json.Marshal(data)
+	ctx.JSON(http.StatusOK, string(status))
+}
