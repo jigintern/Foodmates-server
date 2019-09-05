@@ -36,7 +36,7 @@ func ReadAllPosts(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
 		return
 	}
-	db.Raw("SELECT Posts.id, Posts.`user_id`, Posts.`created_at`, Posts.`updated_at`, Posts.`dish_id`, Posts.`comment`, Posts.`image_address`, Users.`name`, Users.`biography`, Users.`birth`, Users.`country`, Users.`prefecture`, Users.`icon_address`, Dishes.`dish_name`, Dishes.`store_name` FROM `Posts` LEFT OUTER JOIN `Users` ON `Posts`.`user_id` = `Users`.`id` LEFT OUTER JOIN `Dishes` ON `Posts`.`dish_id` = `Dishes`.`id` ORDER BY Posts.created_at DESC").Scan(&results)
+	db.Raw("SELECT Posts.id, Posts.`user_id`, Posts.`created_at`, Posts.`updated_at`, Posts.`dish_id`, Posts.`comment`, Posts.`image_address`, Users.`login_name`, Users.`name`, Users.`biography`, Users.`birth`, Users.`country`, Users.`prefecture`, Users.`icon_address`, Dishes.`dish_name`, Dishes.`store_name` FROM `Posts` LEFT OUTER JOIN `Users` ON `Posts`.`user_id` = `Users`.`id` LEFT OUTER JOIN `Dishes` ON `Posts`.`dish_id` = `Dishes`.`id` ORDER BY Posts.created_at DESC").Scan(&results)
 	ctx.JSON(http.StatusOK, results)
 }
 
