@@ -11,7 +11,7 @@ import (
 // ReadSpecificUser   GET "/api/v1/users/:id/"
 func ReadSpecificUser(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	id := ctx.Param("id")
+	loginName := ctx.Param("login_name")
 	var userData models.User
 	db, err := models.GetDB()
 
@@ -20,7 +20,7 @@ func ReadSpecificUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": http.StatusInternalServerError})
 		return
 	}
-	recordNotFound := db.Table("Users").Where("login_name = ?", id).First(&userData).RecordNotFound()
+	recordNotFound := db.Table("Users").Where("login_name = ?", loginName).First(&userData).RecordNotFound()
 	if recordNotFound {
 		ctx.JSON(http.StatusBadRequest, nil)
 	} else {
