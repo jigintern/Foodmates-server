@@ -44,8 +44,21 @@ func InitRouter() *gin.Engine {
 		}
 		users := api.Group("/users")
 		{
-			users.GET("/:login_name", controllers.ReadSpecificUser)
-			users.GET("/", controllers.ReadAllUsers)
+			readSpecificUser := users.Group("/read")
+			{
+				byID := readSpecificUser.Group("/id")
+				{
+					byID.GET("/:id", controllers.ReadSpecificUserByID)
+				}
+				byLoginName := readSpecificUser.Group("/name")
+				{
+					byLoginName.GET("/:login_name", controllers.ReadSpecificUserByLoginName)
+				}
+				allUsers := readSpecificUser.Group("/all")
+				{
+					allUsers.GET("/", controllers.ReadAllUsers)
+				}
+			}
 			createUser := users.Group("/signup")
 			{
 				createUser.POST("/", controllers.SignUp)
