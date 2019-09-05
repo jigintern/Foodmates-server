@@ -50,6 +50,10 @@ func InitRouter() *gin.Engine {
 			{
 				createUser.POST("/", controllers.SignUp)
 			}
+			signIn := users.Group("/signin")
+			{
+				signIn.POST("/", controllers.SignIn)
+			}
 		}
 		friendships := api.Group("/friendships")
 		{

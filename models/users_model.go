@@ -27,3 +27,8 @@ type SignUpParams struct {
 	Prefecture  string    `gorm:"default:''" json:"prefecture"`
 	IconAddress string    `gorm:"default:''" json:"icon_address"`
 }
+
+type SignInParams struct {
+	LoginName string `gorm:"default:''" json:"login_name"`
+	Password  string `json:"password"`
+}
