@@ -17,7 +17,7 @@ func InitDB() {
 	DBNAME := os.Getenv("MYSQL_DATABASE")
 
 	var err error
-	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=True&loc=Local"
+	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8mb4&parseTime=True&loc=Local"
 
 	fmt.Println("* Opening Mysql database...")
 	db, err = gorm.Open("mysql", CONNECT)
