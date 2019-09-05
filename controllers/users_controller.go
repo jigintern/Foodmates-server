@@ -47,7 +47,7 @@ func ReadAllUsers(ctx *gin.Context) {
 	ctx.JSON(200, userData)
 }
 
-// SignUp   POST "/api/v1/users/create"
+// SignUp   POST "/api/v1/users/signup"
 func SignUp(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var signupParams models.SignUpParams
@@ -80,4 +80,29 @@ func SignUp(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, nil)
 	fmt.Println("\x1b[32msuccess!!\x1b[0m")
 	fmt.Println(signupParams)
+}
+
+// SignIn   POST "/api/v1/users/signin"
+func SignIn(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	var signInParams models.SignInParams
+	var userData models.User
+	err := ctx.BindJSON(&signInParams)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, nil)
+		log.Fatalln(err)
+	}
+	db, err := models.GetDB()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, nil)
+		log.Fatalln(err)
+	}
+	recordNotFound := db.Table("Users").Where("login_name=?", signInParams.LoginName).First(&userData).RecordNotFound()
+	if recordNotFound {
+		ctx.JSON(http.StatusForbidden, nil)
+		fmt.Println("Login incorrect")
+		return
+	} else {
+		ctx.JSON(http.StatusOK, userData)
+	}
 }
