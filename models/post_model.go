@@ -17,6 +17,7 @@ type Post struct {
 
 type PostResponse struct {
 	Post
+	LoginName   string    `gorm:"default:''" json:"login_name"`
 	Name        string    `gorm:"default:''" json:"user_name"`
 	Biography   string    `gorm:"default:''" json:"biography"`
 	Birth       time.Time `json:"birth" sql:"type:date"`
